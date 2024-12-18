@@ -8,52 +8,63 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin("*")
+@RestController
+@RequestMapping("/burger")
 public class BurgerController {
+
     private final BurgerDao burgerDao;
 
     @Autowired
-    public BurgerController(BurgerDao burgerDao) {
-        this.burgerDao = burgerDao;
+    public BurgerController(BurgerDao burgerDao){
+        this.burgerDao=burgerDao;
     }
+
     @PostMapping
-    public Burger saveBurger(Burger burger) {
+    public Burger save(@RequestBody Burger burger){
         BurgerValidation.checkName(burger.getName());
         return burgerDao.save(burger);
+
     }
 
     @GetMapping
-    public List<Burger> getAllBurgers() {
+    public List<Burger> findAll(){
         return burgerDao.findAll();
     }
 
-    @GetMapping("/id")
-    public Burger getBurgerById(@PathVariable  long id) {
+    @GetMapping("/{id}")
+    public Burger find(@PathVariable long id){
         return burgerDao.findById(id);
     }
 
-    @GetMapping("breadType/{breadType}")
-    public List<Burger> getBurgerByBreadType(@PathVariable("breadType") String breadType) {
-        BreadType bt = BreadType.valueOf(breadType);
-        return burgerDao.findByBreadType(bt);
-    }
-    @GetMapping("/price/{price}")
-    public List<Burger> getBurgerByPrice(@PathVariable("price") Integer price) {
-        return burgerDao.findByPrice(price);
-    }
-    @GetMapping("/content/{content}")
-    public List<Burger> getBurgerByContent(@PathVariable("content") String content) {
-        return burgerDao.findByContent(content);
-    }
     @PutMapping
-    public Burger updateBurger(@RequestBody Burger burger) {
+    public Burger update(@RequestBody Burger burger){
         BurgerValidation.checkName(burger.getName());
-        return burgerDao.save(burger);
+        return burgerDao.update(burger);
     }
 
     @DeleteMapping("/{id}")
-    public Burger delete(@PathVariable long id) {
-
+    public Burger delete(@PathVariable long id){
         return burgerDao.remove(id);
     }
+
+    @GetMapping("/breadType/{breadType}")
+    public List<Burger> getByBreadType(@PathVariable("breadType") String breadType){
+        BreadType bt = BreadType.valueOf(breadType);
+        return burgerDao.findByBreadType(bt);
+    }
+
+    @GetMapping("/price/{price}")
+    public List<Burger> getByPrice(@PathVariable("price") Integer price){
+
+        return burgerDao.findByPrice(price);
+    }
+
+    @GetMapping("/content/{content}")
+    public List<Burger> getByContent(@PathVariable("content") String content){
+
+        return burgerDao.findByContent(content);
+    }
+
+
 }
